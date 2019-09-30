@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import peakdetection
 
 #setting figure size
 from matplotlib.pylab import rcParams
@@ -24,3 +25,5 @@ plt.figure(figsize=(16,8))
 plt.plot(df['Close'], label='Close Price history')
 # plt.plot(df['High'], label='High Price history')
 plt.show()
+
+peakdetection.thresholding_algo()

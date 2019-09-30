@@ -12,7 +12,7 @@ rcParams['figure.figsize'] = 20,20
 df = pd.read_csv('NSE-TATAGLOBAL11.csv')
 
 #https://polygon.io/docs/#!/Stocks--Equities/get_v1_historic_quotes_symbol_date
-queryTsla = requests.get('https://api.polygon.io/v1/historic/quotes/TSLA/2019-09-27?apiKey=AK9NOBR0WZO8EVJ5BWVQ')
+queryTsla = requests.get('https://api.polygon.io/v1/historic/quotes/TSLA/2019-09-26?apiKey=AK9NOBR0WZO8EVJ5BWVQ')
 
 # looking at the first five rows of the data
 print(df.head())
