@@ -6,16 +6,7 @@ import datetime
 import time
 import pytz
 
-#find the last tick quote from historic query
-def lastTickFromHistoricQuery(rawContent):
-    parsed_json = json.loads(rawContent)
-    ticks = parsed_json["ticks"]
-    ticksArray = np.array(ticks)
-    if ticks and ticksArray.size > 0:
-        print(ticksArray.size)
-        return ticksArray[len(ticksArray) - 1]
-    else:
-        return False
+
 #
 # #polygon.queryHistoricQuotes("TSLA", "2019-09-26")
 #

@@ -1,7 +1,7 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-import peakdetection
+import json
+from tradingLib import peakdetection
 
 #setting figure size
 from matplotlib.pylab import rcParams
@@ -10,6 +10,10 @@ rcParams['figure.figsize'] = 20,20
 #for normalizing data
 from sklearn.preprocessing import MinMaxScaler
 scaler = MinMaxScaler(feature_range=(0, 1))
+
+
+HISTORIC_DATA_PATH = "historicData/"
+parsed_json = json.loads(open(HISTORIC_DATA_PATH+'TSLA-2019-09-26.json').read())
 
 df = pd.read_csv('NSE-TATAGLOBAL11.csv')
 #print the head
