@@ -1,50 +1,38 @@
-import polygon
-import json
-import numpy as np
-import pytz
-import time
-import datetime
+from polygon import polygonJsonProcessor
 import pylab
-import pandas as pd
+from tradingLib import peakdetection
+import numpy as np
 
-from polygon.polygonQuery import queryHistoricQuotes
+resultDF = polygonJsonProcessor.historicQuotesToDF("TSLA","2019-09-26")
 
-#queryHistoricQuotes("TSLA", "2019-09-26")
+# Settings: lag = 10 minutes, threshold = 5, influence = 0
+lag = 5
+threshold = 5
+influence = 0.8
 
-HISTORIC_DATA_PATH = "historicData/"
-parsed_json = json.loads(open(HISTORIC_DATA_PATH+'TSLA-2019-09-26.json').read())
-ticks = parsed_json["ticks"]
+inputArray = resultDF['AskPrice']
+peakDetectionResult = peakdetection.thresholding_algo(resultDF['AskPrice'],lag=lag, threshold=threshold, influence=influence)
 
-ticksArray = np.array(ticks)
-bidPriceArray = np.zeros(len(ticks))
-askPriceArray = np.zeros(len(ticks))
-dateTimeArray = []
+pylab.figure(figsize=(16, 8))
 
-new_data = pd.DataFrame(columns=['DateTime', 'askPrice'])
+pylab.subplot(311)
+pylab.plot(resultDF['AskPrice'], label='Ask Price history', color="green")
 
-for i in range(0,len(ticksArray)):
-    bidPriceArray[i] = ticksArray[i].get("bP")
-    # get better handle none
-    askPriceArray[i] = ticksArray[i].get("aP")
+pylab.subplot(313)
+pylab.plot(np.arange(1, len(inputArray) + 1),
+           peakDetectionResult["avgFilter"], color="cyan", lw=2)
 
-    second, milliseconds = divmod(ticksArray[i].get("t"), 1000)
+#超过这条线就是peak
+pylab.plot(np.arange(1, len(inputArray) + 1),
+           peakDetectionResult["avgFilter"] + threshold * peakDetectionResult["stdFilter"], color="green", lw=2)
 
-    dateTimeInGMTString = '{}.{:03d}'.format(time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(second)), milliseconds)
+#低于这条线也是peak
+pylab.plot(np.arange(1, len(inputArray) + 1),
+           peakDetectionResult["avgFilter"] - threshold * peakDetectionResult["stdFilter"], color="red", lw=2)
 
-    gmtTimezone = pytz.timezone("GMT")
-    edtTimezone = pytz.timezone("US/Eastern")
+# pylab.plot(resultDF['bidAskInBalance'], label='bid Ask In Balance', color = "blue")
 
-    dateTimeInGMT = datetime.datetime.strptime(dateTimeInGMTString, '%Y-%m-%d %H:%M:%S.%f')
-
-    dateTimeInEDT = gmtTimezone.localize(dateTimeInGMT).astimezone(edtTimezone)
-
-    dateTimeArray.append(dateTimeInEDT)
-
-lastTimeStamp = ticksArray[len(ticks)-1].get("t")
-
-print(bidPriceArray)
-print(askPriceArray)
-
-pylab.plot(bidPriceArray)
-pylab.plot(askPriceArray)
+pylab.subplot(312)
+pylab.step(np.arange(1, len(inputArray) + 1), peakDetectionResult["signals"], color="red", lw=2)
+pylab.ylim(-1.5, 1.5)
 pylab.show()

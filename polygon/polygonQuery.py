@@ -1,6 +1,7 @@
 import requests
 import json
 import numpy as np
+import polygon.constants
 
 APIKEY = "AK9NOBR0WZO8EVJ5BWVQ"
 
@@ -44,11 +45,10 @@ def queryHistoricQuotes(symbol, date):
         if currentTicks:
             allticks.extend(currentTicks)
 
-    fileNameTemplate = "../historicData/{}-{}.json"
-    fileName = fileNameTemplate.format(symbol, date)
+    fileName = polygon.constants.fileNameTemplate.format(symbol, date)
 
     resultJson['ticks'] = allticks
-    with open(fileName, 'w') as file:
+    with open(fileName, 'x') as file:
         json.dump(resultJson, file)
     file.close()
 

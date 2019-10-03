@@ -1,0 +1,1 @@
+fileNameTemplate = "historicData/{}-{}.json"
