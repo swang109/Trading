@@ -11,7 +11,7 @@ import pylab
 def thresholding_algo(input, lag, threshold, influence):
     #return a new array of zero in float64
     signals = np.zeros(len(input))
-    print(input)
+
     filteredY = np.array(input)
 
     #平均值
